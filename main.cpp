@@ -13,6 +13,16 @@ class Matrix {
 
         vector<vector<T>> data;
         size_t theSize;
+
+        //Out of Bounds Function
+        bool inBounds(const int i, const int n) {
+            if (i > n) { //Check if index is in bounds
+                cout << "Error 01: Out of Bounds" << endl; //Error Message
+                return false; //Index is out of bounds
+            } else {
+                return true; //Index is in bounds
+            }
+        }
         
     public:    
 
@@ -24,6 +34,19 @@ class Matrix {
 
         //Matrix: Destructor
         ~Matrix() {}
+
+        //Matrix: Copy Function
+        Matrix<T> copy() {
+            vector<vector<T>> copyData(theSize, vector<T>(theSize));
+
+            for (size_t i = 0; i < theSize; ++i) {
+                for (size_t j = 0; j < theSize; ++j) {
+                    copyData[i][j] = data[i][j];
+                }
+            }
+            Matrix<T> copyMatrix(copyData, theSize);
+            return copyMatrix;
+        }
 
         //Matrix: Print Function
         void print() {
@@ -102,8 +125,47 @@ class Matrix {
             cout << "Minor Diagonal Elements Sum: " << minorDiagonal << endl;
         }
 
+        //Matrix: Swap Row Function
+        void swapRow(const int rowInit, const int rowChange) {
+            Matrix<T> copyMatrix = copy();
+            if (inBounds(rowInit, theSize) && inBounds(rowChange, theSize)) {
+                for (size_t i = 0; i < theSize; ++i) {
+                    copyMatrix.data[rowInit][i] = data[rowChange][i];
+                    copyMatrix.data[rowChange][i] = data[rowInit][i];
+                }
+                cout << endl; copyMatrix.print();
+            }
+        }
 
+        //Matrix: Swap Column Function
+        void swapCol(const int colInit, const int colChange) {
+            Matrix<T> copyMatrix = copy();
+            if (inBounds(colInit, theSize) && inBounds(colChange, theSize)) {
+                for (size_t i = 0; i < theSize; ++i) {
+                    copyMatrix.data[i][colInit] = data[i][colChange];
+                    copyMatrix.data[i][colChange] = data[i][colInit];
+                }
+                cout << endl; copyMatrix.print();
+            }
+        }
 
+        //Matrix: Update Function (Integer)
+        void update(const int row, const int col, int value) {
+            Matrix<T> copyMatrix = copy();
+            if (inBounds(row, theSize) && inBounds(col, theSize))
+            copyMatrix.data[row][col] = value;
+
+            cout << endl; copyMatrix.print();
+        }
+
+        //Matrix: Update Function (Double)
+        void update(const int row, const int col, double value) {
+            Matrix<T> copyMatrix = copy();
+            if (inBounds(row, theSize) && inBounds(col, theSize))
+            copyMatrix.data[row][col] = value;
+
+            cout << endl; copyMatrix.print();
+        }
 };
 
 //Matrix Selection Function
@@ -121,16 +183,6 @@ bool selectMatrix() {
         }
     }
     return selectVal; //Return the boolean
-}
-
-//Out of Bounds Function
-bool inBounds(const int i, const int n) {
-    if (i > n) { //Check if index is in bounds
-        cout << "Error 01: Out of Bounds" << endl; //Error Message
-        return false; //Index is out of bounds
-    } else {
-        return true; //Index is in bounds
-    }
 }
 
 //Size Check Function
@@ -156,42 +208,130 @@ bool validHeader(const size_t n, const int t) {
     return (sizeCheck(n) && typeFlagCheck(t)); //Check Size and typeFlag
 }
 
-//Matrix Result Function for Integer
+//Matrix Result Function (Integer)
 void matrixResult(Matrix<int> mx1, Matrix<int> mx2) {
-    cout << "Matrix 1" << endl;
-    mx1.print();
-    cout << "Matrix 2" << endl;
-    mx2.print();
+    cout << "Matrix 1" << endl; mx1.print(); //Print Matrix 1
+    cout << "Matrix 2" << endl; mx2.print(); //Print Matrix 2
 
-    mx1.add(mx2);
-    mx1.multiply(mx2);
+    mx1.add(mx2); //Add two matrices and display the result
+    mx1.multiply(mx2); //Multiply two matrices and display the result
 
+    //Get the sum of matrix diagonal elements
+    cout << "Matrix Diagonal Elements" << endl;
     if (selectMatrix()) {
-        cout << "Matrix 1 Diagonal Sums" << endl;
         mx1.diagonalSum();
     } else { 
-        cout << "Matrix 2 Diagonal Sums" << endl; 
         mx2.diagonalSum();
+    }
+    cout << endl;
+
+    //Swap matrix rows and display the result
+    cout << "Swap Matrix Rows" << endl;
+    if (selectMatrix()) {
+        int rowInit, rowChange;
+        cout << "Enter a row to swap (1/2): "; cin >> rowInit;
+        cout << "Enter another row to swap (2/2): "; cin >> rowChange;
+        mx1.swapRow(rowInit, rowChange);
+    } else {
+        int rowInit, rowChange;
+        cout << "Enter a row to swap (1/2): "; cin >> rowInit;
+        cout << "Enter another row to swap (2/2): "; cin >> rowChange;
+        mx2.swapRow(rowInit, rowChange);
+    }
+
+    //Swap matrix columns and display the result
+    cout << "Swap Matrix Columns" << endl;
+    if (selectMatrix()) {
+        int colInit, colChange;
+        cout << "Enter a column to swap (1/2): "; cin >> colInit;
+        cout << "Enter another column to swap (2/2): "; cin >> colChange;
+        mx1.swapCol(colInit, colChange);
+    } else {
+        int colInit, colChange;
+        cout << "Enter a column to swap (1/2): "; cin >> colInit;
+        cout << "Enter another column to swap (2/2): "; cin >> colChange;
+        mx2.swapCol(colInit, colChange);
+    }
+
+    //Update matrix rows and display the result
+    cout << "Update Matrix" << endl;
+    if (selectMatrix()) {
+        int row, col, value;
+        cout << "Enter a row index (1/3): "; cin >> row;
+        cout << "Enter a column index (2/3): "; cin >> col;
+        cout << "Enter a new value (3/3): "; cin >> value;
+        mx1.update(row, col, value);
+    } else {
+        int row, col, value;
+        cout << "Enter a row index (1/3): "; cin >> row;
+        cout << "Enter a column index (2/3): "; cin >> col;
+        cout << "Enter a new value (3/3): "; cin >> value;
+        mx2.update(row, col, value);
     }
     return;
 }
 
-//Matrix Result Function for Double
+//Matrix Result Function (Double)
 void matrixResult(Matrix<double> mx1, Matrix<double> mx2) {
-    cout << "Matrix 1" << endl;
-    mx1.print();
-    cout << "Matrix 2" << endl;
-    mx2.print();
+    cout << "Matrix 1" << endl; mx1.print(); //Print Matrix 1
+    cout << "Matrix 2" << endl; mx2.print(); //Print Matrix 2
 
-    mx1.add(mx2);
-    mx1.multiply(mx2);
+    mx1.add(mx2); //Add two matrices and display the result
+    mx1.multiply(mx2); //Multiply two matrices and display the result
 
+    //Get the sum of matrix diagonal elements
+    cout << "Matrix Diagonal Elements" << endl;
     if (selectMatrix()) {
-        cout << "Matrix 1 Diagonal Sums" << endl;
         mx1.diagonalSum();
     } else { 
-        cout << "Matrix 2 Diagonal Sums" << endl; 
         mx2.diagonalSum();
+    }
+    cout << endl;
+
+    //Swap matrix rows and display the result
+    cout << "Swap Matrix Rows" << endl;
+    if (selectMatrix()) {
+        int rowInit, rowChange;
+        cout << "Enter a row to swap (1/2): "; cin >> rowInit;
+        cout << "Enter another row to swap (2/2): "; cin >> rowChange;
+        mx1.swapRow(rowInit, rowChange);
+    } else {
+        int rowInit, rowChange;
+        cout << "Enter a row to swap (1/2): "; cin >> rowInit;
+        cout << "Enter another row to swap (2/2): "; cin >> rowChange;
+        mx2.swapRow(rowInit, rowChange);
+    }
+
+    //Swap matrix columns and display the result
+    cout << "Swap Matrix Columns" << endl;
+    if (selectMatrix()) {
+        int colInit, colChange;
+        cout << "Enter a column to swap (1/2): "; cin >> colInit;
+        cout << "Enter another column to swap (2/2): "; cin >> colChange;
+        mx1.swapCol(colInit, colChange);
+    } else {
+        int colInit, colChange;
+        cout << "Enter a column to swap (1/2): "; cin >> colInit;
+        cout << "Enter another column to swap (2/2): "; cin >> colChange;
+        mx2.swapCol(colInit, colChange);
+    }
+
+    //Update matrix rows and display the result
+    cout << "Update Matrix" << endl;
+    if (selectMatrix()) {
+        int row, col;
+        double value;
+        cout << "Enter a row index (1/3): "; cin >> row;
+        cout << "Enter a column index (2/3): "; cin >> col;
+        cout << "Enter a new value (3/3): "; cin >> value;
+        mx1.update(row, col, value);
+    } else {
+        int row, col;
+        double value;
+        cout << "Enter a row index (1/3): "; cin >> row;
+        cout << "Enter a column index (2/3): "; cin >> col;
+        cout << "Enter a new value (3/3): "; cin >> value;
+        mx2.update(row, col, value);
     }
     return;
 }
