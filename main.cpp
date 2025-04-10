@@ -7,12 +7,13 @@
 
 using namespace std; //Reduce the width of the code | removes std::
 
-template<typename T>
+//Matrix Class
+template<typename T> //Allow Integers and Doubles
 class Matrix {
-    private:
+    private: //Hidden Data
 
-        vector<vector<T>> data;
-        size_t theSize;
+        vector<vector<T>> data; //Matrix Data
+        size_t theSize; //Matrix Size
 
         //Out of Bounds Function
         bool inBounds(const int i, const int n) {
@@ -28,8 +29,8 @@ class Matrix {
 
         //Matrix: Constructor
         Matrix(vector<vector<T>> matrix, size_t n) {
-            data = matrix;
-            theSize = n;
+            data = matrix; //Assign data
+            theSize = n; //Assign size
         };
 
         //Matrix: Destructor
@@ -37,24 +38,26 @@ class Matrix {
 
         //Matrix: Copy Function
         Matrix<T> copy() {
-            vector<vector<T>> copyData(theSize, vector<T>(theSize));
+            vector<vector<T>> copyData(theSize, vector<T>(theSize)); //Copy Vector
 
-            for (size_t i = 0; i < theSize; ++i) {
+            //Copy each data element inside the original matrix
+            for (size_t i = 0; i < theSize; ++i) { 
                 for (size_t j = 0; j < theSize; ++j) {
                     copyData[i][j] = data[i][j];
                 }
             }
-            Matrix<T> copyMatrix(copyData, theSize);
-            return copyMatrix;
+            Matrix<T> copyMatrix(copyData, theSize); //Create a copy matrix using vector
+            return copyMatrix; //Return the matrix
         }
 
         //Matrix: Print Function
         void print() {
+            //Print each data element inside the matrix
             for (size_t i = 0; i < theSize; ++i) {
                 for (size_t j = 0; j < theSize; ++j) {
-                    if (data[i][j] < 10) {
+                    if (data[i][j] < 10) { //Add a space for numbers less than 10
                         cout << " " << data[i][j] << " ";
-                    } else {
+                    } else { //Print the number as it is
                         cout << data[i][j] << " ";
                     }
                 }
@@ -65,11 +68,12 @@ class Matrix {
 
         //Matrix: Print Function (Vector)
         void printVector(const vector<vector<T>> vectorData, const size_t n) {
+            //Print each element inside the matrix
             for (size_t i = 0; i < n; ++i) {
                 for (size_t j = 0; j < n; ++j) {
-                    if (vectorData[i][j] < 10) {
+                    if (vectorData[i][j] < 10) { //Add a space for numbers less than 10
                         cout << " " << vectorData[i][j] << " ";
-                    } else {
+                    } else { //Print the number as it is
                         cout << vectorData[i][j] << " ";
                     }
                 }
@@ -81,90 +85,98 @@ class Matrix {
 
         //Matrix: Add Function
         void add(const Matrix<T> other) {
-            vector<vector<T>> resultMatrix(theSize, vector<T>(theSize));
+            vector<vector<T>> resultMatrix(theSize, vector<T>(theSize)); //Vector to store the result
 
+            //Add elements on the same row and column together from both matrices
             for (size_t i = 0; i < theSize; ++i) {
                 for (size_t j = 0; j < theSize; ++j) {
                     resultMatrix[i][j] = data[i][j] + other.data[i][j];
                 }
             }
-            cout << "Add Matrix Display" << endl;
-            printVector(resultMatrix, theSize);
+            cout << "Add Matrix Display" << endl; //Add Message
+            printVector(resultMatrix, theSize); //Print the vector result
         }
 
         //Matrix: Multiply Function
         void multiply(const Matrix<T> other) {
-            vector<vector<T>> resultMatrix(theSize, vector<T>(theSize));
+            vector<vector<T>> resultMatrix(theSize, vector<T>(theSize)); //Vector to store the result
 
+            //Multiply elements from Matrix 1 row and Matrix 2 column then adding them together
             for (size_t i = 0; i < theSize; ++i) {
                 for (size_t j = 0; j < theSize; ++j) {
-                    double sum = 0;
+                    double sum = 0; //Double to store both integers and sums
                     for (size_t k = 0; k < theSize; ++k) {
                         double product = data[i][k] * other.data[k][j];
                         sum += product;
                     }
-                    resultMatrix[i][j] = sum;
+                    resultMatrix[i][j] = sum; //Assign the sum to the correct position in the result vector
                 }
             }
 
-            cout << "Multiply Matrix Display" << endl;
-            printVector(resultMatrix, theSize);
+            cout << "Multiply Matrix Display" << endl; //Multiplication Message
+            printVector(resultMatrix, theSize); //Print the vector result
         }
         
         //Matrix: Major & Minor Diagonal Sum Function
         void diagonalSum() {
+            //Local Variables
             double majorDiagonal = 0;
             double minorDiagonal = 0;
 
+            //Add up all the diagonal values
             for (size_t i = 0; i < theSize; ++i) {
                 majorDiagonal += data[i][i];
                 minorDiagonal += data[i][(theSize-1) - i];
             }
 
-            cout << "Major Diagonal Elements Sum: " << majorDiagonal << endl;
-            cout << "Minor Diagonal Elements Sum: " << minorDiagonal << endl;
+            cout << "Major Diagonal Elements Sum: " << majorDiagonal << endl; //Print the major diagonal sum
+            cout << "Minor Diagonal Elements Sum: " << minorDiagonal << endl; //Print the minor diagonal sum
         }
 
         //Matrix: Swap Row Function
         void swapRow(const int rowInit, const int rowChange) {
-            Matrix<T> copyMatrix = copy();
+            Matrix<T> copyMatrix = copy(); //Create a copy of the Matrix
+            //Check Valid Row Inputs and then swap the row data
             if (inBounds(rowInit, theSize) && inBounds(rowChange, theSize)) {
                 for (size_t i = 0; i < theSize; ++i) {
                     copyMatrix.data[rowInit][i] = data[rowChange][i];
                     copyMatrix.data[rowChange][i] = data[rowInit][i];
                 }
-                cout << endl; copyMatrix.print();
+                cout << endl; copyMatrix.print(); //Print the copy with change
             }
         }
 
         //Matrix: Swap Column Function
         void swapCol(const int colInit, const int colChange) {
-            Matrix<T> copyMatrix = copy();
+            Matrix<T> copyMatrix = copy(); //Create a copy of the Matrix
+            //Check Valid Column Inputs and then swap the column data
             if (inBounds(colInit, theSize) && inBounds(colChange, theSize)) {
                 for (size_t i = 0; i < theSize; ++i) {
                     copyMatrix.data[i][colInit] = data[i][colChange];
                     copyMatrix.data[i][colChange] = data[i][colInit];
                 }
-                cout << endl; copyMatrix.print();
+                cout << endl; copyMatrix.print(); //Print the copy with change
             }
         }
 
         //Matrix: Update Function (Integer)
         void update(const int row, const int col, int value) {
-            Matrix<T> copyMatrix = copy();
+            Matrix<T> copyMatrix = copy(); //Create a copy of the Matrix
+            //Check Valid row and column and update the value
             if (inBounds(row, theSize) && inBounds(col, theSize))
             copyMatrix.data[row][col] = value;
 
-            cout << endl; copyMatrix.print();
+            cout << endl; copyMatrix.print(); //Print the copy with change
         }
 
         //Matrix: Update Function (Double)
         void update(const int row, const int col, double value) {
-            Matrix<T> copyMatrix = copy();
+            Matrix<T> copyMatrix = copy(); //Create a copy of the Matrix
+            //Check Valid row and column and update the value
             if (inBounds(row, theSize) && inBounds(col, theSize))
             copyMatrix.data[row][col] = value;
 
-            cout << endl; copyMatrix.print();
+            cout << endl; copyMatrix.print(); //Print the copy with change
         }
 };
 
@@ -218,21 +230,21 @@ void matrixResult(Matrix<int> mx1, Matrix<int> mx2) {
 
     //Get the sum of matrix diagonal elements
     cout << "Matrix Diagonal Elements" << endl;
-    if (selectMatrix()) {
+    if (selectMatrix()) { //Matrix 1 Selected
         mx1.diagonalSum();
-    } else { 
+    } else { //Matrix 2 Selected
         mx2.diagonalSum();
     }
     cout << endl;
 
     //Swap matrix rows and display the result
     cout << "Swap Matrix Rows" << endl;
-    if (selectMatrix()) {
+    if (selectMatrix()) { //Matrix 1 Selected
         int rowInit, rowChange;
         cout << "Enter a row to swap (1/2): "; cin >> rowInit;
         cout << "Enter another row to swap (2/2): "; cin >> rowChange;
         mx1.swapRow(rowInit, rowChange);
-    } else {
+    } else { //Matrix 2 Selected
         int rowInit, rowChange;
         cout << "Enter a row to swap (1/2): "; cin >> rowInit;
         cout << "Enter another row to swap (2/2): "; cin >> rowChange;
@@ -241,12 +253,12 @@ void matrixResult(Matrix<int> mx1, Matrix<int> mx2) {
 
     //Swap matrix columns and display the result
     cout << "Swap Matrix Columns" << endl;
-    if (selectMatrix()) {
+    if (selectMatrix()) { //Matrix 1 Selected
         int colInit, colChange;
         cout << "Enter a column to swap (1/2): "; cin >> colInit;
         cout << "Enter another column to swap (2/2): "; cin >> colChange;
         mx1.swapCol(colInit, colChange);
-    } else {
+    } else { //Matrix 2 Selected
         int colInit, colChange;
         cout << "Enter a column to swap (1/2): "; cin >> colInit;
         cout << "Enter another column to swap (2/2): "; cin >> colChange;
@@ -255,20 +267,20 @@ void matrixResult(Matrix<int> mx1, Matrix<int> mx2) {
 
     //Update matrix rows and display the result
     cout << "Update Matrix" << endl;
-    if (selectMatrix()) {
+    if (selectMatrix()) { //Matrix 1 Selected
         int row, col, value;
         cout << "Enter a row index (1/3): "; cin >> row;
         cout << "Enter a column index (2/3): "; cin >> col;
         cout << "Enter a new value (3/3): "; cin >> value;
         mx1.update(row, col, value);
-    } else {
+    } else { //Matrix 2 Selected
         int row, col, value;
         cout << "Enter a row index (1/3): "; cin >> row;
         cout << "Enter a column index (2/3): "; cin >> col;
         cout << "Enter a new value (3/3): "; cin >> value;
         mx2.update(row, col, value);
     }
-    return;
+    return; //Return to Main
 }
 
 //Matrix Result Function (Double)
@@ -281,21 +293,21 @@ void matrixResult(Matrix<double> mx1, Matrix<double> mx2) {
 
     //Get the sum of matrix diagonal elements
     cout << "Matrix Diagonal Elements" << endl;
-    if (selectMatrix()) {
+    if (selectMatrix()) { //Matrix 1 Selected
         mx1.diagonalSum();
-    } else { 
+    } else { //Matrix 2 Selected
         mx2.diagonalSum();
     }
     cout << endl;
 
     //Swap matrix rows and display the result
     cout << "Swap Matrix Rows" << endl;
-    if (selectMatrix()) {
+    if (selectMatrix()) { //Matrix 1 Selected
         int rowInit, rowChange;
         cout << "Enter a row to swap (1/2): "; cin >> rowInit;
         cout << "Enter another row to swap (2/2): "; cin >> rowChange;
         mx1.swapRow(rowInit, rowChange);
-    } else {
+    } else { //Matrix 2 Selected
         int rowInit, rowChange;
         cout << "Enter a row to swap (1/2): "; cin >> rowInit;
         cout << "Enter another row to swap (2/2): "; cin >> rowChange;
@@ -304,12 +316,12 @@ void matrixResult(Matrix<double> mx1, Matrix<double> mx2) {
 
     //Swap matrix columns and display the result
     cout << "Swap Matrix Columns" << endl;
-    if (selectMatrix()) {
+    if (selectMatrix()) { //Matrix 1 Selected
         int colInit, colChange;
         cout << "Enter a column to swap (1/2): "; cin >> colInit;
         cout << "Enter another column to swap (2/2): "; cin >> colChange;
         mx1.swapCol(colInit, colChange);
-    } else {
+    } else { //Matrix 2 Selected
         int colInit, colChange;
         cout << "Enter a column to swap (1/2): "; cin >> colInit;
         cout << "Enter another column to swap (2/2): "; cin >> colChange;
@@ -318,14 +330,14 @@ void matrixResult(Matrix<double> mx1, Matrix<double> mx2) {
 
     //Update matrix rows and display the result
     cout << "Update Matrix" << endl;
-    if (selectMatrix()) {
+    if (selectMatrix()) { //Matrix 1 Selected
         int row, col;
         double value;
         cout << "Enter a row index (1/3): "; cin >> row;
         cout << "Enter a column index (2/3): "; cin >> col;
         cout << "Enter a new value (3/3): "; cin >> value;
         mx1.update(row, col, value);
-    } else {
+    } else { //Matrix 2 Selected
         int row, col;
         double value;
         cout << "Enter a row index (1/3): "; cin >> row;
@@ -342,11 +354,10 @@ void buildMatrix(string fileName) {
     size_t n;
     int t;
 
-    //
+    //Access the File
     ifstream inputFile(fileName);
-    inputFile >> n >> t;
+    inputFile >> n >> t; //Access the size and type information
     if (validHeader(n, t) && t == 0) {
-        cout << "Integer Matrix" << endl;
         //Initialize the Matrices
         vector<vector<int>> mx1;
         vector<vector<int>> mx2;
@@ -355,12 +366,13 @@ void buildMatrix(string fileName) {
         mx1.resize(n, vector<int>(n));
         mx2.resize(n, vector<int>(n));
 
-        //
+        //Transferring the first four lines after size and type into Matrix 1 vector
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < n; ++j) {
                 inputFile >> mx1[i][j];
             }
         }
+        //Transferring the last four lines into Matrix 2 vector
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < n; ++j) {
                 inputFile >> mx2[i][j];
@@ -368,13 +380,12 @@ void buildMatrix(string fileName) {
         }
         inputFile.close(); //Close the File
 
-        //
+        //Creating Two Matrices from the vectors and size
         Matrix<int> matrix1(mx1, n);
         Matrix<int> matrix2(mx2, n);
-        matrixResult(matrix1, matrix2);
+        matrixResult(matrix1, matrix2); //Running the Functions
 
     } else if (validHeader(n, t) && t == 1) {
-        cout << "Double Matrix" << endl;
         //Initialize the Matrices
         vector<vector<double>> mx1;
         vector<vector<double>> mx2;
@@ -383,12 +394,13 @@ void buildMatrix(string fileName) {
         mx1.resize(n, vector<double>(n));
         mx2.resize(n, vector<double>(n));
 
-        //
+        //Transferring the first four lines after size and type into Matrix 1 vector
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < n; ++j) {
                 inputFile >> mx1[i][j];
             }
         }
+        //Transferring the last four lines into Matrix 2 vector
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < n; ++j) {
                 inputFile >> mx2[i][j];
@@ -396,12 +408,12 @@ void buildMatrix(string fileName) {
         }
         inputFile.close(); //Close the File
 
-        //
+        //Creating Two Matrices from the vectors and size
         Matrix<double> matrix1(mx1, n);
         Matrix<double> matrix2(mx2, n);
-        matrixResult(matrix1, matrix2);
+        matrixResult(matrix1, matrix2); //Running the Functions
 
-    } return;
+    } return; //Return to Main
 }
 
 //Main Function
@@ -410,11 +422,9 @@ int main() {
     //Local Variables
     string fileName;
 
-    //REMEMBER TO REMOVE THE COMMENT LINE!
-    //cout << "Enter the file name with dot extension: ", cin >> fileName;
-    fileName = "matrix.txt";
-    buildMatrix(fileName);
+    cout << "Enter the file name with dot extension: ", cin >> fileName; //Get File Input from User
+    buildMatrix(fileName); //Build Matrix from File Input
 
-    cout << "[Lab 9 main.cpp Program is Completed]" << endl;
+    cout << "[Lab 9 main.cpp Program is Completed]" << endl; //End Program Message
     return 0; //Program Run was Successful
 }
